@@ -70,7 +70,23 @@ class Matrix
         return *this;
     }
 
+    static Matrix sub(Matrix m1, Matrix m2)
+    {
+        assert(m1.col_count == m2.col_count);
+        assert(m1.row_count == m2.row_count);
 
+        Matrix m(m1.row_count,m1.col_count);
+
+        for (int i = 0; i < m1.row_count; i++)
+        {
+            for (int j = 0; j < m1.col_count; j++)
+            {
+                m.set_value(i,j, m1.get_value(i,j) - m2.get_value(i,j));
+            }
+        }
+
+        return m;
+    }
     static Matrix &getE(size_t dim)
     {
         Matrix *m = new Matrix(dim,dim,0);

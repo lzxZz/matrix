@@ -16,9 +16,11 @@ TEST(InfoTest, Test)
 
 TEST(EMatrixTest,Test)
 {
-    EXPECT_EQ("Matrix:(1,1)\n[1,]\n",Matrix::Matrix::getE(1).info());
+    EXPECT_EQ("Matrix:(1,1)\n[1,]\n",
+        Matrix::Matrix::getE(1).info());
 
-    EXPECT_EQ("Matrix:(2,2)\n[1,0,]\n[0,1,]\n",Matrix::Matrix::getE(2).info());
+    EXPECT_EQ("Matrix:(2,2)\n[1,0,]\n[0,1,]\n",
+        Matrix::Matrix::getE(2).info());
 
 }
 
@@ -44,3 +46,13 @@ TEST(MultiTest,Test)
     EXPECT_EQ("Matrix:(2,2)\n[12.3,12.3,]\n[12.3,12.3,]\n", 
         Matrix::Matrix(2,2,1).multi_number(12.3).info()); 
 }
+
+TEST(SubTest,Test)
+{
+    Matrix::Matrix m1(2,2,3);
+    Matrix::Matrix m2(2,2,1);
+    
+    EXPECT_EQ(Matrix::Matrix(2,2,2).info(),
+        Matrix::Matrix::sub(m1,m2).info());
+}
+
