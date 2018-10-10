@@ -58,6 +58,17 @@ class Matrix
     {
         *(values + r * col_count + c) = v;
     }
+    Matrix &multi_number(double number)
+    {
+        for (size_t i = 0; i < row_count; i++)
+        {
+            for (size_t j = 0; j < col_count; j++)
+            {
+                set_value(i, j, get_value(i,j) * number);
+            }
+        }
+        return *this;
+    }
 
 
     static Matrix &getE(size_t dim)
