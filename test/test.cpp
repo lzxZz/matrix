@@ -56,3 +56,13 @@ TEST(SubTest,Test)
         Matrix::Matrix::sub(m1,m2).info());
 }
 
+TEST(AddTest,Test)
+{
+    Matrix::Matrix m1(2,2,2);
+    Matrix::Matrix m2(2,2,1);
+    
+    EXPECT_EQ(Matrix::Matrix(2,2,3).info(),
+        Matrix::Matrix::add(m1,m2).info());
+}
+
+
