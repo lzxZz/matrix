@@ -166,6 +166,36 @@ class Matrix
 
         return *m;
     }
+
+    Vector &get_row(size_t row_index)
+    {
+        if (row_index >= this->row_count)
+        {
+            return *(new Matrix(0,0,0));
+        }
+        Vector *vec = new Vector(1,this->col_count);
+        for (size_t i = 0; i < col_count; i++)
+        {
+            vec->set_value(0,i,get_value(row_index, i));
+        }
+        return *vec;
+    }
+
+    Matrix &set_row(size_t index, Vector row)
+    {
+        if (index >= this->row_count)
+        {
+            return *(new Matrix(0,0,0));
+        }
+        
+        for (size_t i = 0; i < col_count; i++)
+        {
+            this->set_value(index,i, row.get_value(0,i));
+        }
+
+        return *this;
+    }
+
   private:
     size_t row_count;
     size_t col_count;

@@ -124,3 +124,40 @@ TEST(TransTest,Test)
     EXPECT_EQ(Matrix::Matrix(2,3,1).info(), Matrix::Matrix::trans(Matrix::Matrix(3,2,1)).info());
 
 }
+
+TEST(GetRowTest,ErrorTest)
+{
+    Matrix::Matrix m(5,5,1);
+
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(5).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(20).info());
+}
+
+TEST(GetRowTest,NormalTest)
+{
+    Matrix::Matrix m(5,4,1);
+
+    EXPECT_EQ(Matrix::Matrix(1,4,1).info(), m.get_row(4).info());
+}
+
+
+
+TEST(SetRowTest,ErrorTest)
+{
+    Matrix::Matrix m(5,1,1);
+    
+
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(5).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(20).info());
+}
+
+TEST(SetRowTest,NormalTest)
+{
+    Matrix::Matrix m(5,4,1);
+    m.set_value(4,1,20);
+
+    EXPECT_EQ(m.info(), m.set_row(4,Matrix::Matrix(1,1,1)).info());
+}
+
+
+
