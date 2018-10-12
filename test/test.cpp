@@ -114,3 +114,13 @@ TEST(VectorTest,generateTest)
     v1.set_value(3,0,1);
     EXPECT_EQ(v1.info(),Matrix::Matrix::getIVector(10,3).info());
 }
+
+TEST(TransTest,Test)
+{
+    Matrix::Matrix m = Matrix::Matrix::getE(4);
+
+    EXPECT_EQ(m.info(), Matrix::Matrix::trans(m).info());
+
+    EXPECT_EQ(Matrix::Matrix(2,3,1).info(), Matrix::Matrix::trans(Matrix::Matrix(3,2,1)).info());
+
+}

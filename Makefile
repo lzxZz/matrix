@@ -11,7 +11,7 @@ vpath %.cpp ./src
 vpath %.cpp ./test
 
 build_test: 
-	g++ -o $(TEST_TARGET) ./src/main.cpp $(TESTS) $(TEST_FLAG)
+	g++ -o $(TEST_TARGET) -g ./src/main.cpp $(TESTS) $(TEST_FLAG)
 
 
 test_run:

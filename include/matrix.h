@@ -11,7 +11,7 @@ class Matrix
 {
     using Vector = Matrix;
   public:
-    Matrix(size_t r, size_t c) : row_count(r), col_count(r)
+    Matrix(size_t r, size_t c) : row_count(r), col_count(c)
     {
         values = new double[r * c];
     }
@@ -129,9 +129,22 @@ class Matrix
                 m->set_value(i,j,value);
             }
         }
+        return *m; 
+    }
 
-         return *m;
-         
+    static Matrix &trans(Matrix m)
+    {
+        Matrix *mat = new Matrix(m.col_count,m.row_count);
+
+        for (size_t i = 0; i < m.row_count; i++)
+        {
+            for (size_t j = 0; j < m.col_count; j++)
+            {
+                mat->set_value(j,i,m.get_value(i,j));
+            }
+        }
+
+        return *mat;
     }
 
     static Vector &getIVector(size_t dim, size_t index)
