@@ -1,4 +1,4 @@
-.PHONY:test_run test_build
+.PHONY:test_run build_test
 
 TEST_TARGET=./debug/test
 

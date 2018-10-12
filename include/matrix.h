@@ -69,42 +69,71 @@ class Matrix
         }
         return *this;
     }
-
-    static Matrix sub(Matrix m1, Matrix m2)
+    //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
+    static Matrix &sub(Matrix m1, Matrix m2)
     {
         assert(m1.col_count == m2.col_count);
         assert(m1.row_count == m2.row_count);
 
-        Matrix m(m1.row_count,m1.col_count);
+        Matrix *m = new Matrix(m1.row_count,m1.col_count);
 
         for (int i = 0; i < m1.row_count; i++)
         {
             for (int j = 0; j < m1.col_count; j++)
             {
-                m.set_value(i,j, m1.get_value(i,j) - m2.get_value(i,j));
+                m->set_value(i,j, m1.get_value(i,j) - m2.get_value(i,j));
             }
         }
 
-        return m;
+        return *m;
     }
 
-    static Matrix add(Matrix m1, Matrix m2)
+    //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
+    static Matrix &add(Matrix m1, Matrix m2)
     {
         assert(m1.col_count == m2.col_count);
         assert(m1.row_count == m2.row_count);
 
-        Matrix m(m1.row_count,m1.col_count);
+        Matrix *m = new Matrix(m1.row_count,m1.col_count);
 
         for (int i = 0; i < m1.row_count; i++)
         {
             for (int j = 0; j < m1.col_count; j++)
             {
-                m.set_value(i,j, m1.get_value(i,j) + m2.get_value(i,j));
+                m->set_value(i,j, m1.get_value(i,j) + m2.get_value(i,j));
             }
         }
 
-        return m;
+        return *m;
     }
+
+    static Matrix &multi_matrix(Matrix m1, Matrix m2)
+    {
+        if (m1.col_count != m2.row_count)
+        {
+            Matrix *empty = new Matrix(0,0,0);
+            return *empty;
+        }
+
+        Matrix *m = new Matrix(m1.row_count,m2.col_count,0);
+        for (size_t i = 0; i < m->row_count; i++)
+        {
+            for (size_t j = 0; j < m->col_count; j++)
+            {
+                double value = 0;
+                for (size_t k = 0; k < m1.col_count; k ++)
+                {
+                    value += m1.get_value(i,k) * m2.get_value(k,j);
+                }
+                m->set_value(i,j,value);
+            }
+        }
+
+         return *m;
+         
+    }
+
+    //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
     static Matrix &getE(size_t dim)
     {
         Matrix *m = new Matrix(dim,dim,0);
