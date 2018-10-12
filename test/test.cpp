@@ -147,8 +147,10 @@ TEST(SetRowTest,ErrorTest)
     Matrix::Matrix m(5,1,1);
     
 
-    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(5).info());
-    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_row(20).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), 
+        m.set_row(5,Matrix::Matrix(1,1,1)).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), 
+        m.set_row(20,Matrix::Matrix(1,1,1)).info());
 }
 
 TEST(SetRowTest,NormalTest)
@@ -161,3 +163,41 @@ TEST(SetRowTest,NormalTest)
 
 
 
+TEST(GetColTest,ErrorTest)
+{
+    Matrix::Matrix m(5,5,1);
+
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_col(5).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), m.get_col(20).info());
+}
+
+TEST(GetColTest,NormalTest)
+{
+    Matrix::Matrix m(5,4,1);
+    
+
+    EXPECT_EQ(Matrix::Matrix(5,1,1).info(), m.get_col(0).info());
+}
+
+
+
+TEST(SetColTest,ErrorTest)
+{
+    Matrix::Matrix m(5,1,1);
+    
+
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), 
+        m.set_col(1,Matrix::Matrix::getIVector(5,3)).info());
+    EXPECT_EQ(Matrix::Matrix(0,0,0).info(), 
+        m.set_col(20,Matrix::Matrix::getIVector(5,3)).info());
+
+}
+
+TEST(SetColTest,NormalTest)
+{
+    Matrix::Matrix m(5,4,0);
+    m.set_value(4,1,1);
+
+    EXPECT_EQ(m.info(), 
+        m.set_row(4,Matrix::Matrix::getIVector(5,4)).info());
+}

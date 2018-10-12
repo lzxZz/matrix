@@ -9,6 +9,10 @@ namespace Matrix
 
 class Matrix
 {
+    enum class Vector_Direction{
+        Horizontal,
+        Vectical
+    };
     using Vector = Matrix;
   public:
     Matrix(size_t r, size_t c) : row_count(r), col_count(c)
@@ -147,10 +151,20 @@ class Matrix
         return *mat;
     }
 
-    static Vector &getIVector(size_t dim, size_t index)
+    static Vector &getIVector(size_t dim, size_t index, Vector_Direction direc = Vector_Direction::Vectical)
     {
-        Matrix *m = new Matrix(dim,1,0);
-        m->set_value(index,0,1);
+        Matrix *m;
+        if (direc == Vector_Direction::Vectical)
+        {
+            m = new Matrix(dim,1,0);
+            m->set_value(index,0,1);
+        }
+        else
+        {
+            m = new Matrix(1,dim,0);
+            m->set_value(0,index,1);
+        }
+        
         return *m;
     }
 
@@ -195,6 +209,38 @@ class Matrix
 
         return *this;
     }
+
+    Vector &get_col(size_t index)
+    {
+        if (index >= this->col_count)
+        {
+            return *(new Matrix(0,0,0));
+        }
+        Vector *vec = new Vector(this->row_count,1);
+        
+        for (size_t i = 0; i < row_count; i++)
+        {
+            vec->set_value(i,0,get_value(i,index));
+        }
+        return *vec;
+
+    }
+
+    Matrix &set_col(size_t index, Vector col)
+    {
+        if (index >= this->col_count)
+        {
+            return *(new Matrix(0,0,0));
+        }
+      
+         for (size_t i = 0; i < row_count; i++)
+        {
+            this->set_value(i,index, col.get_value(i,0));
+        }
+        return *this;
+
+    }
+
 
   private:
     size_t row_count;
