@@ -107,3 +107,10 @@ TEST(MultiMatrixTest,GeneralTest)
     EXPECT_EQ(Matrix::Matrix(1,1,2).info(),
         Matrix::Matrix::multi_matrix(m2,m3).info());
 }
+
+TEST(VectorTest,generateTest)
+{
+    Matrix::Matrix v1(10,1,0);
+    v1.set_value(3,0,1);
+    EXPECT_EQ(v1.info(),Matrix::Matrix::getIVector(10,3).info());
+}

@@ -9,6 +9,7 @@ namespace Matrix
 
 class Matrix
 {
+    using Vector = Matrix;
   public:
     Matrix(size_t r, size_t c) : row_count(r), col_count(r)
     {
@@ -133,6 +134,13 @@ class Matrix
          
     }
 
+    static Vector &getIVector(size_t dim, size_t index)
+    {
+        Matrix *m = new Matrix(dim,1,0);
+        m->set_value(index,0,1);
+        return *m;
+    }
+
     //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
     static Matrix &getE(size_t dim)
     {
@@ -151,6 +159,6 @@ class Matrix
     double *values;
 };
 
-using Vector = Matrix;
+
 
 } // namespace Matrix
