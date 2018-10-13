@@ -1,14 +1,22 @@
 
+#ifndef __MATRIX_H
+#define __MATRIX_H
+
 #include <iostream>
 #include <string>
 #include <sstream>
+#include <memory>
+#include <vector>
+#include <cassert>
 using namespace std;
 
 namespace Matrix
 {
 
+
 class Matrix
 {
+    static Matrix *empty_matrix;
     enum class Vector_Direction{
         Horizontal,
         Vectical
@@ -29,6 +37,17 @@ class Matrix
             {
                 set_value(i, j, init_value);
             }
+        }
+    }
+
+    Matrix(std::vector<double> vec)
+    {
+        row_count = 1;
+        col_count = vec.size();
+        values = new double[row_count * col_count];
+        for (size_t i = 0; i < col_count; i++)
+        {
+            set_value(0,i,vec.at(i));
         }
     }
 
@@ -55,7 +74,7 @@ class Matrix
         return os.str();
     }
 
-    double get_value(int r, int c)
+    double get_value(int r, int c) const
     {
         return *(values + r * col_count + c);
     }
@@ -75,12 +94,12 @@ class Matrix
         return *this;
     }
     //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
-    static Matrix &sub(Matrix m1, Matrix m2)
+    static shared_ptr<Matrix> sub(const Matrix &m1, const Matrix &m2)
     {
         assert(m1.col_count == m2.col_count);
         assert(m1.row_count == m2.row_count);
 
-        Matrix *m = new Matrix(m1.row_count,m1.col_count);
+        shared_ptr<Matrix> m = make_shared<Matrix>(m1.row_count,m1.col_count);
 
         for (int i = 0; i < m1.row_count; i++)
         {
@@ -90,16 +109,16 @@ class Matrix
             }
         }
 
-        return *m;
+        return m;
     }
 
     //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
-    static Matrix &add(Matrix m1, Matrix m2)
+    static shared_ptr<Matrix> add(const Matrix &m1, const Matrix &m2)
     {
         assert(m1.col_count == m2.col_count);
         assert(m1.row_count == m2.row_count);
 
-        Matrix *m = new Matrix(m1.row_count,m1.col_count);
+        shared_ptr<Matrix> m = make_shared<Matrix>(m1.row_count,m1.col_count);
 
         for (int i = 0; i < m1.row_count; i++)
         {
@@ -109,18 +128,17 @@ class Matrix
             }
         }
 
-        return *m;
+        return m;
     }
 
-    static Matrix &multi_matrix(Matrix m1, Matrix m2)
+    static shared_ptr<Matrix> multi_matrix(const Matrix &m1, const Matrix &m2)
     {
         if (m1.col_count != m2.row_count)
         {
-            Matrix *empty = new Matrix(0,0,0);
-            return *empty;
+            return make_shared<Matrix>(0,0,0);
         }
 
-        Matrix *m = new Matrix(m1.row_count,m2.col_count,0);
+        shared_ptr<Matrix> m = make_shared<Matrix>(m1.row_count,m2.col_count,0);
         for (size_t i = 0; i < m->row_count; i++)
         {
             for (size_t j = 0; j < m->col_count; j++)
@@ -133,12 +151,12 @@ class Matrix
                 m->set_value(i,j,value);
             }
         }
-        return *m; 
+        return m; 
     }
 
-    static Matrix &trans(Matrix m)
+    static shared_ptr<Matrix>  trans(const Matrix &m)
     {
-        Matrix *mat = new Matrix(m.col_count,m.row_count);
+        shared_ptr<Matrix>  mat =  make_shared<Matrix>(m.col_count,m.row_count);
 
         for (size_t i = 0; i < m.row_count; i++)
         {
@@ -147,59 +165,62 @@ class Matrix
                 mat->set_value(j,i,m.get_value(i,j));
             }
         }
-
-        return *mat;
+        
+        return mat;
     }
 
-    static Vector &getIVector(size_t dim, size_t index, Vector_Direction direc = Vector_Direction::Vectical)
+    static shared_ptr<Matrix> getIVector(size_t dim, size_t index, Vector_Direction direc = Vector_Direction::Vectical)
     {
-        Matrix *m;
+        shared_ptr<Matrix> m;
         if (direc == Vector_Direction::Vectical)
         {
-            m = new Matrix(dim,1,0);
+            m = make_shared<Matrix>(dim,1,0);
             m->set_value(index,0,1);
         }
         else
         {
-            m = new Matrix(1,dim,0);
+            m = make_shared<Matrix>(1,dim,0);
             m->set_value(0,index,1);
         }
         
-        return *m;
+        return m;
     }
 
     //返回一个新矩阵的引用,使用的时候使用智能指针,否则会泄露
-    static Matrix &getE(size_t dim)
+    static  shared_ptr<Matrix> getE(size_t dim)
     {
-        Matrix *m = new Matrix(dim,dim,0);
+        shared_ptr<Matrix> m = make_shared<Matrix>(dim,dim,0);
 
         for (size_t i = 0; i < dim; i++)
         {
             m->set_value(i,i,1);
         }
 
-        return *m;
+        return m;
     }
 
-    Vector &get_row(size_t row_index)
+    shared_ptr<Matrix> get_row(size_t row_index)
     {
         if (row_index >= this->row_count)
         {
-            return *(new Matrix(0,0,0));
+            
+            return make_shared<Matrix>(0,0,0);
         }
-        Vector *vec = new Vector(1,this->col_count);
+        shared_ptr<Vector> vec = make_shared<Vector>(1,this->col_count);
         for (size_t i = 0; i < col_count; i++)
         {
             vec->set_value(0,i,get_value(row_index, i));
         }
-        return *vec;
+        return vec;
     }
 
-    Matrix &set_row(size_t index, Vector row)
+    
+    Matrix &set_row(size_t index,const Vector &row)
     {
         if (index >= this->row_count)
-        {
-            return *(new Matrix(0,0,0));
+        {   
+            // return make_shared<Matrix>(0,0,0);
+            throw (out_of_range("矩阵维度溢出"));
         }
         
         for (size_t i = 0; i < col_count; i++)
@@ -210,19 +231,19 @@ class Matrix
         return *this;
     }
 
-    Vector &get_col(size_t index)
+    shared_ptr<Matrix> get_col(size_t index)
     {
         if (index >= this->col_count)
         {
-            return *(new Matrix(0,0,0));
+            return make_shared<Matrix>(0,0,0);
         }
-        Vector *vec = new Vector(this->row_count,1);
+        shared_ptr<Vector> vec = make_shared<Vector>(this->row_count,1);
         
         for (size_t i = 0; i < row_count; i++)
         {
             vec->set_value(i,0,get_value(i,index));
         }
-        return *vec;
+        return vec;
 
     }
 
@@ -230,7 +251,7 @@ class Matrix
     {
         if (index >= this->col_count)
         {
-            return *(new Matrix(0,0,0));
+            throw (out_of_range("矩阵维度溢出"));
         }
       
          for (size_t i = 0; i < row_count; i++)
@@ -241,7 +262,9 @@ class Matrix
 
     }
 
-
+    ~Matrix(){
+        delete [] values;
+    }
   private:
     size_t row_count;
     size_t col_count;
@@ -251,3 +274,6 @@ class Matrix
 
 
 } // namespace Matrix
+
+
+#endif

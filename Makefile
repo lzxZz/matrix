@@ -1,4 +1,4 @@
-.PHONY:test_run build_test
+.PHONY:test_run build_test mem
 
 TEST_TARGET=./debug/test
 
@@ -18,3 +18,7 @@ test_run:
 	@make build_test
 	@clear
 	@$(TEST_TARGET)
+
+mem:
+	make 
+	valgrind --tool=memcheck --leak-check=full --show-leak-kinds=all $(TEST_TARGET)
